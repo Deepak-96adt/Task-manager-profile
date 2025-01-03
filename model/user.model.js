@@ -30,23 +30,11 @@ const userSchema = mongoose.Schema({
         maxLength:10,
         trim:true
     },
-    address:{
-        type:String,
-        required:[true,"address is required"],
-        trim:true
-    },
-    city:{
-        type:String,
-        required:[true,"city is required"],
-        trim:true
-    },
     gender:{
         type:String,
         required:[true,"gender is required"],
     },
-    role:String,
-    status:Number,
-    info:String
+    created_at:String
 });
 
 userSchema.plugin(uniqueValidator);
