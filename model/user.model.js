@@ -1,42 +1,45 @@
-import mongoose from "mongoose";
-import uniqueValidator from "mongoose-unique-validator";
+import { DataTypes } from "sequelize";
+import sequelize from "./db.config.js";
 
-const userSchema = mongoose.Schema({
-    _id:Number,
-    name:{
-        type:String,
-        required:[true,"name is required"],
-        lowercase:true,
-        trim:true
+const User = sequelize.define('User',{
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
     },
-    email:{
-        type:String,
-        required:[true,"email is required"],
-        unique:true,
-        lowercase:true,
-        trim:true
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  mobile: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: [10, 10],
     },
-    password:{
-        type:String,
-        required:[true,"password is required"],
-        minLength:5,
-        maxLength:10,
-        trim:true
-    },
-    mobile:{
-        type:String,
-        required:[true,"mobile is required"],
-        minLength:10,
-        maxLength:10,
-        trim:true
-    },
-    gender:{
-        type:String,
-        required:[true,"gender is required"],
-    },
-    created_at:String
+  },
+  gender: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+}, {
+  timestamps: false, // Disable automatic createdAt and updatedAt fields
 });
 
-userSchema.plugin(uniqueValidator);
-const userSchemaModel = mongoose.model("task-manager-user-data",userSchema);
-export default userSchemaModel;
+export default User;

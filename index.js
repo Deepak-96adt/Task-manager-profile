@@ -1,25 +1,38 @@
-import userRoute from "./route/user.route.js";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import fileUpload from "express-fileupload";
+import dotenv from "dotenv";
+import userRoute from "./route/user.route.js";
+import sequelize from "./model/db.config.js";
 
-var app=express();
+dotenv.config();
 
-//configuration to fetch req body content : body parser middleware
-//used to fetch req data from methods like : POST , PUT , PATCH , DELETE
+const app = express();
+const PORT = process.env.PORT || 5001;
+
+// Middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
-
-
-//for accept file data
-app.use(fileUpload())
-
-// for cross origin
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(fileUpload());
 app.use(cors());
 
-//route level middleware to load specific task
-app.use("/user",userRoute);
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connected successfully.");
+    await sequelize.sync(); // Default: Creates tables if not exists
+    console.log("All models synchronized successfully.");
+  } catch (error) {
+    console.error("Error initializing database:", error.message);
+  }
+})();
 
-app.listen(3001);
-console.log("server connected successfully on port http://localhost:3001");
+// Routes
+app.use("/user", userRoute);
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
