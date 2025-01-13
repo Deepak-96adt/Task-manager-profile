@@ -1,11 +1,13 @@
 import express from "express";
-var route=express.Router();
+var route = express.Router();
 
 import * as userController from "../controller/user.controller.js";
-route.post("/register",userController.register);
-route.post("/login",userController.login);
-route.get("/fetch",userController.fetch);
-route.patch("/update",userController.update);
-route.delete("/delete",userController.deleteUser);
+import { authenticateToken } from "../middleware/authenticateToken.js";
+
+route.post("/register", userController.register);
+route.post("/login", userController.login);
+route.get("/fetch", authenticateToken, userController.fetch);
+route.patch("/update", authenticateToken, userController.update);
+route.delete("/delete", authenticateToken, userController.deleteUser);
 
 export default route;
